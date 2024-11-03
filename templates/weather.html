@@ -1,7 +1,75 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Weather Forecast for {{ weather_info.city }}</h2>
-<p>Temperature: {{ weather_info.temperature }}°C</p>
+<h2>UV Index and Weather Forecast for {{ weather_info.city }}</h2>
 <p>UV Index: {{ weather_info.uv_index }} ({{ uv_category }})</p>
-<p>{{ uv_category }} UV index level. Take precautions accordingly.</p>
+<p>Temperature: {{ weather_info.temperature }}°C</p>
+
+<!-- Canvas for Chart.js graph -->
+<div>
+    <canvas id="uvChart" width="400" height="200"></canvas>
+</div>
+
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('uvChart').getContext('2d');
+    
+    const uvData = {{ uv_data | tojson }};
+    const tempData = {{ temp_data | tojson }};
+    const labels = {{ labels | tojson }};
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'UV Index',
+                    data: uvData,
+                    borderColor: '#FF5733',
+                    backgroundColor: 'rgba(255, 87, 51, 0.2)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointBackgroundColor: '#FF5733',
+                    fill: true,
+                },
+                {
+                    label: 'Temperature (°C)',
+                    data: tempData,
+                    borderColor: '#33A1FF',
+                    backgroundColor: 'rgba(51, 161, 255, 0.2)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointBackgroundColor: '#33A1FF',
+                    fill: true,
+                },
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Values'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Time (Hourly)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+            }
+        }
+    });
+</script>
 {% endblock %}
