@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Weather Forecast for {{ weather_info.city }}</h2>
+<p>Temperature: {{ weather_info.temperature }}°C</p>
+<p>UV Index: {{ weather_info.uv_index }} ({{ uv_category }})</p>
+<p>{{ uv_category }} UV index level. Take precautions accordingly.</p>
+{% endblock %}
