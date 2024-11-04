@@ -1,13 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="feedback">
-    <h2>Feedback</h2>
-    <p>Your feedback helps us improve the UV Index Tracker!</p>
-    <form action="/templates/feedback.html" method="post">
-        <label for="message">Your Message:</label>
-        <textarea id="message" name="message" rows="4" placeholder="Let us know your thoughts..."></textarea>
-        <button type="submit" class="btn">Submit</button>
+<!-- Feedback Form Section -->
+<div class="section-box feedback-form" role="region" aria-labelledby="feedback-header">
+    <h3 id="feedback-header">Submit Your Feedback</h3>
+    <form method="POST" action="/submit-feedback" aria-labelledby="feedback-form-instructions">
+        <p id="feedback-form-instructions" class="sr-only">We'd love to hear your thoughts on the UV Index Tracker! Let us know if you have any suggestions, recommendations, or if there's anything we can improve.</p>
+        
+        <label for="feedback">Your Feedback:</label>
+        <textarea id="feedback" name="feedback" rows="5" placeholder="Write your feedback here..." aria-required="true"></textarea>
+        
+        <label for="email">Email (optional):</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email if you'd like a response">
+        
+        <button type="submit" aria-label="Submit Feedback">Submit Feedback</button>
+    </form>
+</div>
+
+<!-- Notification Signup Section -->
+<div class="section-box notification-signup" role="region" aria-labelledby="notification-header">
+    <h3 id="notification-header">Sign Up for UV Index Alerts</h3>
+    <p>Enter your email to receive notifications on high UV index days, especially helpful for sensitive skin.</p>
+    <form method="POST" action="/signup-alert">
+        <label for="contact_info">Email for Alerts:</label>
+        <input type="email" id="contact_info" name="contact_info" placeholder="Enter your email" aria-required="true">
+        <button type="submit" aria-label="Sign up for UV index alerts">Sign Up</button>
     </form>
 </div>
 {% endblock %}

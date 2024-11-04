@@ -1,8 +1,56 @@
 {% extends "base.html" %}
+
 {% block content %}
-<form method="post">
-    <label for="city">Enter City:</label>
-    <input type="text" name="city" id="city" required>
-    <button type="submit">Get Forecast</button>
+<h2>UV Index Tracker</h2>
+
+<form method="POST" aria-labelledby="form-instructions">
+    <p id="form-instructions" class="sr-only">Fill in location details to get the UV index forecast.</p>
+
+    <!-- City or ZIP Code Search -->
+    <label for="location">Enter City or ZIP Code:</label>
+    <input type="text" id="location" name="location" placeholder="City or ZIP Code" aria-required="true">
+    
+    <!-- Coordinate Search -->
+    <label for="latitude">Latitude:</label>
+    <input type="text" id="latitude" name="latitude" placeholder="Latitude" aria-required="true">
+    
+    <label for="longitude">Longitude:</label>
+    <input type="text" id="longitude" name="longitude" placeholder="Longitude" aria-required="true">
+    
+    <!-- Automatic Location Detection Button -->
+    <button type="button" onclick="detectLocation()" aria-label="Detect my current location">
+        Use My Current Location
+    </button>
+    
+    <!-- Submit Button -->
+    <button type="submit" aria-label="Submit location information">Submit</button>
 </form>
+
+<!-- Sun Protection Recommendations -->
+<div class="section-box sun-protection" role="region" aria-labelledby="sun-protection-header">
+    <h3 id="sun-protection-header">Sun Protection Recommendations</h3>
+    <ul>
+        <li><strong>Sunscreen:</strong> Choose a broad-spectrum sunscreen with SPF based on the UV level. Reapply every 2 hours or after swimming/sweating.</li>
+        <li><strong>Clothing:</strong> Wear tightly woven, long-sleeve shirts and pants for better sun protection. Consider UPF-rated clothing for added protection.</li>
+        <li><strong>Accessories:</strong> Use a wide-brimmed hat and UV-blocking sunglasses to protect your face and eyes from UV rays.</li>
+    </ul>
+</div>
+
+<script>
+    function detectLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    document.getElementById('latitude').value = position.coords.latitude;
+                    document.getElementById('longitude').value = position.coords.longitude;
+                },
+                (error) => {
+                    alert("Location access denied or unavailable.");
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by your browser.");
+        }
+    }
+</script>
 {% endblock %}

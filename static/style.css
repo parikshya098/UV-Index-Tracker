@@ -1,29 +1,195 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
+    background-color: #f4f4f9; /* Light background for high contrast */
+    color: #333; /* Dark text for readability */
 }
+
+/* Header and Navigation Styling */
 header {
     background-color: #2d89ef;
-    color: #fff;
+    color: #ffffff;
     text-align: center;
-    padding: 1rem;
+    padding: 2rem; /* Increased padding for even larger header */
 }
+
+header h1 {
+    margin: 0;
+    font-size: 2.2em; /* Increase font size for a prominent title */
+}
+
+nav {
+    margin-top: 20px;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 30px; /* Increased gap for spacing between links */
+    margin: 0;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 15px 20px; /* Increase padding for larger clickable area */
+    font-size: 1.1em; /* Slightly larger font for links */
+    border-radius: 6px;
+}
+
+nav ul li a:hover {
+    background-color: #1c6cd5;
+    text-decoration: underline;
+}
+
+/* Center-align Main Content */
 main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 20px;
+    justify-content: center;
+    margin: 20px auto;
+    padding-top: 20px;
+    width: 100%;
+    max-width: 800px; /* Increased max-width for larger displays */
+    box-sizing: border-box;
 }
+
+/* Form Styles */
 form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
 }
-input, button {
+
+label {
+    align-self: flex-start;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"], input[type="email"], textarea, button {
+    width: 100%;
     padding: 10px;
     margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
 }
+
+/* Focus Styles for Accessibility */
+button:focus, input:focus, textarea:focus {
+    outline: 2px solid #2d89ef;
+    outline-offset: 2px;
+}
+
+.section-box:focus-within {
+    border-color: #2d89ef;
+}
+
+/* Button Styles */
+button {
+    background-color: #2d89ef;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    margin-top: 15px;
+}
+
+button:hover {
+    background-color: #1c6cd5;
+}
+
+button:active {
+    background-color: #155a9f;
+}
+
+/* Chart Container */
+.chart-container {
+    width: 100%;
+    max-width: 700px;
+    height: 400px;
+    margin-top: 20px;
+}
+
 canvas {
-    max-width: 100%;
-    height: auto;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Section Box Styling for Accessibility and Readability */
+.section-box {
+    width: 100%;
+    max-width: 700px;
+    background-color: #ffffff;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #2d89ef;
+}
+
+.section-box h3 {
+    font-size: 1.4em;
+    color: #2d89ef;
+    margin-top: 0;
+    border-bottom: 2px solid #f4f4f9;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+.section-box p, .section-box ul {
+    font-size: 1em;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Link and Interactive Element Accessibility */
+a, a:focus, a:hover {
+    color: #2d89ef;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    h2 {
+        font-size: 1.3em;
+        text-align: center;
+    }
+
+    input[type="text"], input[type="email"], textarea, button {
+        font-size: 14px;
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+
+    .section-box {
+        padding: 15px;
+    }
 }

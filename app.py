@@ -1,88 +1,125 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import requests
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
+app.secret_key = 'saana2003'
 
-# Replace with your actual OpenWeatherMap API key
 GEOCODING_API_KEY = "aed05528d555dbb50a948b41b2387806"
 
-def get_coordinates(city):
-    geocode_url = f"http://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={GEOCODING_API_KEY}"
+def get_coordinates(location):
+    if location.isdigit():
+        geocode_url = f"http://api.openweathermap.org/geo/1.0/zip?zip={location},US&appid={GEOCODING_API_KEY}"
+    else:
+        geocode_url = f"http://api.openweathermap.org/geo/1.0/direct?q={location}&limit=1&appid={GEOCODING_API_KEY}"
+    
     response = requests.get(geocode_url)
     data = response.json()
-    print(f"Geocoding response for {city}: {data}")  # Debugging output
-
-    # Check if the response has an error message
-    if 'cod' in data and data['cod'] == 401:
-        print("Invalid API Key error.")
-        return None, None
     
-    # Check if data is valid and contains location information
-    if data and len(data) > 0:
+    if isinstance(data, list) and data:
         latitude = data[0].get('lat')
         longitude = data[0].get('lon')
-        return latitude, longitude
+    elif 'lat' in data and 'lon' in data:
+        latitude = data.get('lat')
+        longitude = data.get('lon')
     else:
-        return None, None  # Return None if the city is not found
+        return None, None
+    
+    return latitude, longitude
+
+def get_weather_data(latitude, longitude):
+    api_url = (
+        f"https://api.open-meteo.com/v1/forecast?"
+        f"latitude={latitude}&longitude={longitude}&"
+        "current=temperature_2m,relative_humidity_2m,uv_index&"
+        "hourly=uv_index&daily=uv_index_max&timezone=auto"
+    )
+    response = requests.get(api_url)
+    return response.json()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        city = request.form['city']
-        return redirect(url_for('weather', city=city))
+        location = request.form.get('location')
+        if location:
+            return redirect(url_for('weather', location=location))
+        else:
+            return "Location field is required.", 400
     return render_template('index.html')
 
-@app.route('/weather/<city>')
-def weather(city):
-    # Get dynamic coordinates for the city
-    latitude, longitude = get_coordinates(city)
+@app.route('/weather/<location>')
+def weather(location):
+    latitude, longitude = get_coordinates(location)
     
     if latitude is None or longitude is None:
-        # Display an error message if the city coordinates couldn't be retrieved
-        return f"Could not find coordinates for {city}. Please check the city name and try again.", 404
+        return f"Could not find coordinates for {location}. Please check the location name or ZIP code and try again.", 404
 
-    # Use the obtained coordinates to fetch weather and UV data
-    api_url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,uv_index"
+    api_url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,relative_humidity_2m&hourly=uv_index&daily=uv_index_max&timezone=auto&past_days=7&past_hours=24&forecast_hours=24"
     response = requests.get(api_url)
     data = response.json()
 
-    # Check if 'hourly' data is available in the response
-    if 'hourly' in data and 'uv_index' in data['hourly'] and 'temperature_2m' in data['hourly']:
-        uv_data = data['hourly']['uv_index'][:24]  # Get the first 24 hours of UV index data
-        temp_data = data['hourly']['temperature_2m'][:24]  # Get the first 24 hours of temperature data
-        labels = [f"Hour {i+1}" for i in range(24)]
-    else:
-        # Provide empty data and labels if 'hourly' key or data is missing
-        uv_data = []
-        temp_data = []
-        labels = []
-
-    # Prepare weather information for display
+    # Safely retrieve data or default to empty lists
+    temp_data = data.get('hourly', {}).get('temperature_2m', [None] * 24)
+    uv_data = data.get('hourly', {}).get('uv_index', [None] * 24)
+    hourly_labels = data.get('hourly', {}).get('time', [None] * 24)
+    
+    # Safely get current data
     weather_info = {
         'temperature': temp_data[0] if temp_data else "N/A",
+        'humidity': data.get('current', {}).get('relative_humidity_2m', "N/A"),
         'uv_index': uv_data[0] if uv_data else "N/A",
-        'city': city
+        'city': location
     }
 
-    # Categorize the UV index if available, else set to "Unknown"
-    uv_category = categorize_uv_index(weather_info['uv_index']) if uv_data else "Unknown"
+    return render_template(
+        'weather.html',
+        weather_info=weather_info,
+        temp_data=temp_data,
+        uv_data=uv_data,
+        hourly_labels=hourly_labels,
+        hourly_uv_data=zip(hourly_labels, uv_data)
+    )
 
-    return render_template('weather.html', weather_info=weather_info, uv_category=uv_category, uv_data=uv_data, temp_data=temp_data, labels=labels)
+# Feedback route to display the feedback form page
+@app.route('/feedback', methods=['GET', 'POST'])
+def feedback():
+    if request.method == 'POST':
+        feedback = request.form.get('feedback')
+        email = request.form.get('email')
+        
+        # Process the feedback, e.g., save it to a file or print to console (for demo purposes)
+        print("Feedback received:", feedback)
+        if email:
+            print("User email:", email)
 
-def categorize_uv_index(uv_index):
-    """Categorize UV index into risk levels."""
-    if uv_index == "N/A":
-        return "Unknown"
-    elif uv_index < 3:
-        return 'Low'
-    elif uv_index < 6:
-        return 'Moderate'
-    elif uv_index < 8:
-        return 'High'
-    elif uv_index < 11:
-        return 'Very High'
-    else:
-        return 'Extreme'
+        # Show a success message after submission
+        flash("Thank you for your feedback!", "success")
+        return redirect(url_for('feedback'))
+    
+    return render_template('feedback.html')
+
+# Route to handle the feedback form submission specifically (optional)
+@app.route('/submit-feedback', methods=['POST'])
+def submit_feedback():
+    feedback = request.form.get('feedback')
+    email = request.form.get('email')
+    
+    # Process the feedback here (e.g., log to console or save to file)
+    print("Feedback submitted:", feedback)
+    if email:
+        print("User email:", email)
+    
+    flash("Thank you for your feedback!", "success")
+    return redirect(url_for('feedback'))
+
+# Route for signup alert (existing route)
+@app.route('/signup-alert', methods=['POST'])
+def signup_alert():
+    contact_info = request.form.get('contact_info')
+    # Process notification signup (e.g., add to mailing list)
+    print("User signed up for alerts:", contact_info)
+    flash("You have signed up for UV Index alerts.", "success")
+    return redirect(url_for('feedback'))
 
 if __name__ == '__main__':
     app.run(debug=True)

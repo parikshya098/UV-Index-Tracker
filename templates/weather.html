@@ -1,24 +1,64 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>UV Index and Weather Forecast for {{ weather_info.city }}</h2>
-<p>UV Index: {{ weather_info.uv_index }} ({{ uv_category }})</p>
-<p>Temperature: {{ weather_info.temperature }}°C</p>
+<h2>Weather Forecast for {{ weather_info.city | safe }}</h2>
 
-<!-- Canvas for Chart.js graph -->
-<div>
-    <canvas id="uvChart" width="400" height="200"></canvas>
+<p>Current Temperature: {{ weather_info.temperature }}°C</p>
+<p>Current Humidity: {{ weather_info.humidity }}%</p>
+<p>Current UV Index: 
+    <span style="color: 
+        {% if weather_info.uv_index <= 2 %}green
+        {% elif weather_info.uv_index <= 5 %}yellow
+        {% elif weather_info.uv_index <= 7 %}orange
+        {% elif weather_info.uv_index <= 10 %}red
+        {% else %}purple{% endif %}
+    ">{{ weather_info.uv_index }}</span>
+</p>
+
+<!-- Chart Container with Accessible Label -->
+<div class="chart-container" role="img" aria-label="UV Index and Temperature trend chart">
+    <canvas id="uvChart"></canvas>
 </div>
 
-<!-- Chart.js Script -->
+<!-- Health and Safety Tips based on UV Index Level -->
+<div class="section-box health-tips" role="region" aria-labelledby="health-tips-header">
+    <h3 id="health-tips-header">Health and Safety Tips</h3>
+    <p><strong>Current UV Index Level: {{ weather_info.uv_index }}</strong></p>
+    
+    {% if weather_info.uv_index <= 2 %}
+        <p><strong>Low</strong>: Minimal sun protection required. Consider using SPF 15 sunscreen if you have sensitive skin.</p>
+    {% elif weather_info.uv_index <= 5 %}
+        <p><strong>Moderate</strong>: Wear SPF 30 sunscreen, sunglasses, and consider protective clothing. Avoid prolonged exposure around midday.</p>
+    {% elif weather_info.uv_index <= 7 %}
+        <p><strong>High</strong>: Use SPF 50 sunscreen, wear a hat, UV-blocking sunglasses, and protective clothing. Seek shade during midday hours (10 AM - 4 PM).</p>
+    {% elif weather_info.uv_index <= 10 %}
+        <p><strong>Very High</strong>: Strong sun protection needed. Use SPF 50+, wear a wide-brimmed hat, UV-blocking sunglasses, and stay indoors or in shade from 10 AM to 4 PM if possible.</p>
+    {% else %}
+        <p><strong>Extreme</strong>: Maximum protection required. Use SPF 50+, wear protective clothing, sunglasses, and avoid sun exposure during peak hours. Stay indoors if possible.</p>
+    {% endif %}
+</div>
+
+<!-- Educational Section -->
+<div class="section-box education" role="region" aria-labelledby="education-header">
+    <h3 id="education-header">Understanding the UV Index</h3>
+    <p>The UV Index measures the strength of ultraviolet radiation from the sun. Higher UV levels indicate a greater risk of harm from unprotected sun exposure, especially to the skin and eyes.</p>
+    <ul>
+        <li><strong>Low (0-2):</strong> Minimal risk. Basic protection (e.g., SPF 15 sunscreen) may be sufficient.</li>
+        <li><strong>Moderate (3-5):</strong> Moderate risk. Consider wearing protective clothing and SPF 30 sunscreen.</li>
+        <li><strong>High (6-7):</strong> High risk. Use SPF 50 sunscreen and seek shade during midday hours.</li>
+        <li><strong>Very High (8-10):</strong> Very high risk. Full protection is essential; limit outdoor exposure.</li>
+        <li><strong>Extreme (11+):</strong> Extreme risk. Take maximum precautions; avoid going out if possible.</li>
+    </ul>
+    <p>Always take appropriate precautions based on the current UV index to protect your skin and eyes from sun damage.</p>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     const ctx = document.getElementById('uvChart').getContext('2d');
-    
-    const uvData = {{ uv_data | tojson }};
     const tempData = {{ temp_data | tojson }};
-    const labels = {{ labels | tojson }};
+    const uvData = {{ uv_data | tojson }};
+    const labels = {{ hourly_labels | tojson }};
     
     new Chart(ctx, {
         type: 'line',
@@ -31,9 +71,9 @@
                     borderColor: '#FF5733',
                     backgroundColor: 'rgba(255, 87, 51, 0.2)',
                     borderWidth: 2,
-                    tension: 0.4,
                     pointBackgroundColor: '#FF5733',
                     fill: true,
+                    tension: 0.4,
                 },
                 {
                     label: 'Temperature (°C)',
@@ -41,13 +81,15 @@
                     borderColor: '#33A1FF',
                     backgroundColor: 'rgba(51, 161, 255, 0.2)',
                     borderWidth: 2,
-                    tension: 0.4,
                     pointBackgroundColor: '#33A1FF',
                     fill: true,
+                    tension: 0.4,
                 },
             ]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true,

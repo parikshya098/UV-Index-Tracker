@@ -2,14 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UV Index Tracker</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <header>
+    <header role="banner">
         <h1>UV Index and Weather Forecast</h1>
+        <nav role="navigation">
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
+            </ul>
+        </nav>
     </header>
-    <main>
+    <main role="main">
         {% block content %}{% endblock %}
     </main>
 </body>
