@@ -217,7 +217,7 @@ def signup():
 # def send_confirmation_email(user_email):
 #     """Send a confirmation email using SendGrid."""
 #     message = Mail(
-#         from_email='pbhandari1@ualr.edu',
+#         from_email='aa@example.edu',
 #         to_emails=user_email,
 #         subject='Thank You for Signing Up for UV Index Alerts',
 #         plain_text_content="""
