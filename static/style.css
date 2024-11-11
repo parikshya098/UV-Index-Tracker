@@ -7,49 +7,164 @@ body {
     color: #333; /* Dark text for readability */
 }
 
-/* Header and Navigation Styling */
+/* Header Styling */
 header {
-    background-color: #2d89ef;
-    color: #ffffff;
-    text-align: center;
-    padding: 2rem; /* Increased padding for even larger header */
-}
-
-header h1 {
-    margin: 0;
-    font-size: 2.2em; /* Increase font size for a prominent title */
-}
-
-nav {
-    margin-top: 20px;
-}
-
-nav ul {
-    list-style-type: none;
-    padding: 0;
+    position: relative;
+    background-color: #FFBF00; /* Amber */
+    padding: 20px;
     display: flex;
-    justify-content: center;
-    gap: 30px; /* Increased gap for spacing between links */
-    margin: 0;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo Container */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+}
+
+.logo {
+    width: 110px;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.1);
+}
+
+/* Modal Styles */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+}
+
+.modal-content {
+    display: block;
+    margin: 50px auto;
+    max-width: 80%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(255, 191, 0, 0.6);
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #ffffff;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #FFBF00; /* Amber hover effect */
+}
+
+h1 {
+    color: #ffffff;
+    font-size: 1.8rem;
+}
+
+/* Navigation Bar Styling */
+nav ul {
+    display: flex;
+    list-style-type: none;
+    gap: 20px;
 }
 
 nav ul li {
-    display: inline;
+    position: relative;
 }
 
 nav ul li a {
-    color: #fff;
     text-decoration: none;
-    font-weight: bold;
-    padding: 15px 20px; /* Increase padding for larger clickable area */
-    font-size: 1.1em; /* Slightly larger font for links */
-    border-radius: 6px;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 1.11rem; /* Increased font size */
+    padding: 10px 15px;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    border-radius: 5px;
 }
 
 nav ul li a:hover {
-    background-color: #1c6cd5;
-    text-decoration: underline;
+    background-color: #F9E79F; /* Soft warm yellow for hover effect */
+    color: #444;
 }
+
+/* T# Styling */
+.t-number {
+    position: absolute;
+    top: 5px; /* Position at the top */
+    right: 15px; /* Align to the right */
+    font-size: 0.85rem; /* Smaller font size */
+    color: #444;
+    font-weight: normal; /* Normal font weight */
+}
+
+/* Add active link indicator */
+nav ul li a.active {
+    background-color: #6DA34D; /* Earthy Green for active links */
+    color: #ffffff;
+}
+
+nav ul li.t-number {
+    margin-left: auto; /* Align T# to the right */
+    font-weight: bold;
+    color: #FFBF00; /* Amber color to highlight */
+    padding: 10px;
+}
+
+/* Footer Styling */
+footer {
+    background-color: #FFBF00; /* Amber footer background */
+    color: #ffffff;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    font-size: 1 rem; /* Increased font size */
+    margin-top: 30px;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+    margin: 10px 0;
+    font-size: 0.9em;
+}
+
+/* Back to Top Link - matching nav link styles */
+.back-to-top {
+    display: inline-block;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 500; /* Same weight as nav links */
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.back-to-top:hover {
+    background-color: #F9E79F; /* Soft yellow on hover */
+    color: #333; /* Dark text color for contrast on hover */
+}
+
+/* Smooth Scroll Behavior */
+html {
+    scroll-behavior: smooth;
+}
+
 
 /* Center-align Main Content */
 main {
@@ -60,23 +175,90 @@ main {
     margin: 20px auto;
     padding-top: 20px;
     width: 100%;
-    max-width: 800px; /* Increased max-width for larger displays */
+    max-width: 800px;
     box-sizing: border-box;
 }
 
 /* Form Styles */
-form {
+/* Form Container Styling */
+/* Form Container Styling */
+form#location-form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    max-width: 400px;
-    padding: 15px;
-    background-color: #fff;
+    justify-content: center;
+    width: 50%; /* Set to cover half the screen width */
+    max-width: 1000px; /* Set a reasonable max width for larger screens */
+    min-width: 450px; /* Ensure it doesn't get too narrow on smaller screens */
+    margin: 0 auto 30px auto;
+    padding: 20px;
+    background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
 }
+
+
+/* Form Labels and Inputs Styling */
+form#location-form label {
+    align-self: flex-start;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+form#location-form input[type="text"],
+form#location-form input[type="date"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease-in-out;
+}
+
+form#location-form input:focus {
+    border-color: #FFBF00; /* Amber color for focus */
+    outline: none;
+}
+
+/* Buttons Styling */
+form#location-form button {
+    width: auto;
+    padding: 12px 22px;
+    margin-top: 10px;
+    background-color: #FF914D; /* Warm orange button */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+form#location-form button:hover {
+    background-color: #FF7043; /* Darker orange on hover */
+}
+
+form#location-form button:active {
+    background-color: #E64A19; /* Even darker on active click */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    form#location-form {
+        width: 70%; 
+    }
+}
+
+@media (max-width: 480px) {
+    form#location-form {
+        width: 80%; 
+    }
+}
+
+
 
 label {
     align-self: flex-start;
@@ -92,89 +274,272 @@ input[type="text"], input[type="email"], textarea, button {
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
-    box-sizing: border-box;
 }
 
 /* Focus Styles for Accessibility */
 button:focus, input:focus, textarea:focus {
-    outline: 2px solid #2d89ef;
+    outline: 2px solid #FFBF00;
     outline-offset: 2px;
-}
-
-.section-box:focus-within {
-    border-color: #2d89ef;
 }
 
 /* Button Styles */
 button {
-    background-color: #2d89ef;
-    color: white;
+    background-color: #FF914D; /* Warm Orange for buttons */
+    width: auto; /* Set the width to auto so it adjusts based on content */
+    padding: 12px 22px; /* Adjust padding for better height and width */
+    color: #ffffff;
     border: none;
     cursor: pointer;
     font-weight: bold;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
     margin-top: 15px;
 }
 
 button:hover {
-    background-color: #1c6cd5;
+    background-color: #FF7043; /* Darker Orange for hover */
 }
 
 button:active {
-    background-color: #155a9f;
+    background-color: #E64A19; /* Even darker orange for active */
 }
 
-.chart-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width: 800px;
-    height: 500px;
-    margin: 20px auto;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-canvas {
-    width: 100% !important;
-    height: 100% !important;
-}
-
-/* Section Box Styling for Accessibility and Readability */
+/* Section Box Styling */
 .section-box {
     width: 100%;
-    max-width: 700px;
+    max-width: 800px;
     background-color: #ffffff;
     padding: 20px;
-    margin: 20px 0;
+    margin: 20px auto;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border-left: 5px solid #2d89ef;
+    border-left: 5px solid #FFBF00; /* Amber border */
 }
 
+/* Center-align and resize section-box headings */
 .section-box h3 {
-    font-size: 1.4em;
-    color: #2d89ef;
-    margin-top: 0;
-    border-bottom: 2px solid #f4f4f9;
-    padding-bottom: 5px;
-    margin-bottom: 15px;
+    text-align: center; /* Center align the heading */
+    font-size: 1.58rem; /* Increase font size to be closer to h2 */
+    margin-bottom: 20px;
+    color: #6DA34D; 
 }
 
-.section-box p, .section-box ul {
-    font-size: 1em;
-    line-height: 1.6;
+/* Button inside Section Box Styling */
+.section-box button {
+    display: block; /* Ensures the button takes up its own line */
+    margin: 20px auto; /* Center-align the button using auto margins */
+    width: auto;
+    padding: 14px 24px;
+    background-color: #FF914D; /* Warm orange button */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.section-box button:hover {
+    background-color: #FF7043; /* Darker orange on hover */
+}
+
+.section-box button:active {
+    background-color: #E64A19; /* Darker shade on click */
+}
+
+/* Center-align content inside the feedback form section box */
+.section-box.feedback-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center align all elements */
+    text-align: center; /* Center align text inside the form */
+}
+
+/* Styling for form elements */
+.section-box.feedback-form form {
+    width: 100%;
+    max-width: 600px; /* Limit the form width for better readability */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.section-box.feedback-form label {
+    align-self: center; /* Align labels to the left within the form */
+    margin-bottom: 5px;
+    font-weight: bold;
     color: #555;
 }
 
-/* For feedback and signup alert */
-.flash-messages {
-    margin-top: 20px;
+.section-box.feedback-form textarea,
+.section-box.feedback-form input {
+    width: 110%; /* Make inputs and textarea take full width of the form */
+    max-width: 800px;
     padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
 }
 
+.section-box.feedback-form textarea {
+    resize: vertical;
+}
+
+.section-box.feedback-form input {
+    height: 40px;
+}
+
+
+
+
+/* Center align the notification signup paragraph */
+.section-box.notification-signup p {
+    text-align: center; /* Center align the text */
+    margin: 15px auto; /* Center the paragraph and add some margin */
+    max-width: 600px; /* Limit the width for better readability */
+    line-height: 1.5; /* Improve readability with line spacing */
+    font-size: 1rem; /* Adjust font size as needed */
+    color: #555; /* Softer text color */
+}
+/* Center-align content inside the notification signup section box */
+.section-box.notification-signup {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center align all elements */
+    text-align: center; /* Center align text inside the form */
+    width: 100%;
+    max-width: 800px;
+    background-color: #ffffff;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #FFBF00; /* Amber border */
+}
+
+/* Styling for form elements inside the notification signup section */
+.section-box.notification-signup form {
+    width: 100%;
+    max-width: 600px; /* Limit the form width for better readability */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center-align all form elements */
+}
+
+.section-box.notification-signup label {
+    align-self: center; /* Center align labels within the form */
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.section-box.notification-signup input {
+    width: 110%; /* Make input fields take full width of the form */
+    max-width: 800px;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+/* Chart Container */
+/* Chart Container Styling */
+.chart-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 900px;
+    height: 500px;
+    background-color: #ffffff;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Canvas Styling */
+canvas {
+    flex: 1;
+    height: 100%;
+}
+
+/* Slim Color Indicator Bar on the side */
+.color-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 120px; /* Very narrow width */
+    padding: 5px;
+    margin-left: 40px;
+}
+
+.color-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.color-box {
+    width: 15px; /* Very slim color box */
+    height: 15px;
+    border-radius: 3px;
+    margin-right: 8px;
+}
+
+/* Color levels based on UV index */
+.color-box.low {
+    background-color: green;
+}
+
+.color-box.moderate {
+    background-color: yellow;
+}
+
+.color-box.high {
+    background-color: orange;
+}
+
+.color-box.very-high {
+    background-color: red;
+}
+
+.color-box.extreme {
+    background-color: purple;
+}
+
+.color-item span {
+    font-size: 0.8rem;
+    color: #333;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        flex-direction: column;
+        height: 400px;
+    }
+
+    .color-indicator {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .color-item {
+        margin-bottom: 0;
+        margin-right: 10px;
+    }
+}
+
+
+
+/* Alerts */
 .alert {
     padding: 10px;
     border-radius: 5px;
@@ -182,21 +547,24 @@ canvas {
 }
 
 .alert.success {
-    background-color: #d4edda;
+    background-color: #DFF0D8; /* Light green for success */
     color: #155724;
-    border: 1px solid #c3e6cb;
+    border: 1px solid #C3E6CB;
 }
 
 .alert.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background-color: #F8BBD0; /* Soft pink for errors */
+    color: #C2185B;
+    border: 1px solid #F5C6CB;
 }
 
-/* Link and Interactive Element Accessibility */
-a, a:focus, a:hover {
-    color: #2d89ef;
-    text-decoration: underline;
+/* Link and Interactive Element Styling */
+a {
+    color: #FF914D; /* Warm Orange for links */
+}
+
+a:hover {
+    color: #FF7043;
 }
 
 /* Responsive Design */
@@ -205,13 +573,9 @@ a, a:focus, a:hover {
         font-size: 1.5em;
     }
 
-    h2 {
-        font-size: 1.3em;
-        text-align: center;
-    }
-
-    input[type="text"], input[type="email"], textarea, button {
-        font-size: 14px;
+    nav ul {
+        flex-direction: column;
+        gap: 10px;
     }
 
     .chart-container {

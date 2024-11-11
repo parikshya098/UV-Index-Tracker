@@ -8,7 +8,13 @@
 </head>
 <body>
     <header role="banner">
-        <h1>UV Index Tracker</h1>
+        <!-- Logo and Title -->
+        <div class="logo-container">
+            <img src="/static/logo.png" alt="UV Index Tracker Logo" class="logo" id="logo">
+            <h1>UV Index Tracker</h1>
+        </div>
+
+        <!-- Navigation Bar -->
         <nav role="navigation">
             <ul>
                 <li><a href="{{ url_for('index') }}">Home</a></li>
@@ -17,9 +23,48 @@
                 <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
             </ul>
         </nav>
+        <div class="t-number">T00688394</div>
     </header>
+
+    <!-- Modal for Full Logo View -->
+    <div id="logoModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="fullLogo">
+    </div>
+
     <main role="main">
         {% block content %}{% endblock %}
     </main>
+
+    <footer>
+        <a href="#top" class="back-to-top">Back to Top</a>
+        <p>&copy; 2024 UV Index Tracker by Parikshya. All rights reserved. </p>
+
+    <script>
+        // Get the modal and elements
+        const modal = document.getElementById('logoModal');
+        const logo = document.getElementById('logo');
+        const fullLogo = document.getElementById('fullLogo');
+        const closeBtn = document.querySelector('.close');
+
+        // Open modal on logo click
+        logo.onclick = function() {
+            modal.style.display = 'block';
+            fullLogo.src = logo.src; // Set the modal image source to the logo source
+        };
+
+        // Close modal when clicking on the close button
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        };
+
+        // Close modal when clicking outside the image
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+    </script>
 </body>
 </html>

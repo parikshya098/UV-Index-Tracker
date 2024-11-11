@@ -2,10 +2,24 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 import requests
 from datetime import datetime
 from flask_cors import CORS
+import smtplib
+import os
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+from flask_mail import Mail, Message
 
 app = Flask(__name__)
 app.secret_key = 'saana2003'
 CORS(app, resources={r"/*": {"origins": "*"}})
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'your_email@gmail.com'
+app.config['MAIL_PASSWORD'] = 'your_app_password'
+mail = Mail(app)
 
 # API keys for geocoding and weather data
 GEOCODING_API_KEY = "aed05528d555dbb50a948b41b2387806"
@@ -190,6 +204,9 @@ def signup():
         if email:
             print(f"Signup received: {email}")
             flash("Successfully signed up for UV index alerts!", "success")
+            
+            # # Send confirmation email
+            # send_confirmation_email(email)
         else:
             flash("Please enter a valid email address.", "error")
         
@@ -197,9 +214,30 @@ def signup():
     
     return render_template('signup.html')
 
+# def send_confirmation_email(user_email):
+#     """Send a confirmation email using SendGrid."""
+#     message = Mail(
+#         from_email='pbhandari1@ualr.edu',
+#         to_emails=user_email,
+#         subject='Thank You for Signing Up for UV Index Alerts',
+#         plain_text_content="""
+#         Thank you for signing up for UV index alerts!
+#         You will receive notifications on high UV index days, especially helpful for sensitive skin.
+        
+#         Stay safe and protected!
+#         """
+#     )
+
+#     try:
+#         sg = SendGridAPIClient('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')
+#         response = sg.send(message)
+#         print(f"Email sent to {user_email}")
+#     except Exception as e:
+#         print(f"Failed to send email: {e}")
+
 @app.route('/navigation')
 def navigation():
     return render_template('navigation.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5001, debug=True)

@@ -3,28 +3,30 @@
 {% block content %}
 <h2>UV Index Forecast</h2>
 
-<form method="POST" id="location-form">
-    <!-- City or ZIP Code Search -->
-    <label for="location">Enter City:</label>
-    <input type="text" id="location" name="location" placeholder="City Name or ZIP Code" required>
+<div class="form-container">
+    <form method="POST" id="location-form">
+        <!-- City or ZIP Code Search -->
+        <label for="location">Enter City or Zip Code:</label>
+        <input type="text" id="location" name="location" placeholder="City / ZIP Code" required>
 
-    <!-- Coordinate Inputs -->
-    <label for="latitude">Latitude:</label>
-    <input type="text" id="latitude" name="latitude" readonly>
+        <!-- Coordinate Inputs -->
+        <label for="latitude">Latitude:</label>
+        <input type="text" id="latitude" name="latitude" readonly>
 
-    <label for="longitude">Longitude:</label>
-    <input type="text" id="longitude" name="longitude" readonly>
+        <label for="longitude">Longitude:</label>
+        <input type="text" id="longitude" name="longitude" readonly>
 
-    <!-- Date Range Inputs -->
-    <label for="from_date">From Date:</label>
-    <input type="date" id="from_date" name="from_date" required>
+        <!-- Date Range Inputs -->
+        <label for="from_date">From Date:</label>
+        <input type="date" id="from_date" name="from_date" required>
 
-    <label for="to_date">To Date:</label>
-    <input type="date" id="to_date" name="to_date" required>
+        <label for="to_date">To Date:</label>
+        <input type="date" id="to_date" name="to_date" required>
 
-    <button type="button" onclick="detectLocation()">Use My Current Location</button>
-    <button type="submit">Submit</button>
-</form>
+        <button type="button" onclick="detectLocation()">Use My Current Location</button>
+        <button type="submit">Submit</button>
+    </form>
+</div>
 
 <!-- JavaScript to detect location and reverse geocode -->
 <script>
