@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Notification Signup Section -->
+<div class="section-box notification-signup" role="region" aria-labelledby="notification-header">
+    <h3 id="notification-header">Sign Up for UV Index Alerts</h3>
+    <p>Enter your email to receive notifications on high UV index days, especially helpful for sensitive skin.</p>
+    
+    <form method="POST" action="{{ url_for('signup') }}" aria-labelledby="signup-form-instructions">
+        <label for="contact_info">Email for Alerts:</label>
+        <input type="email" id="contact_info" name="contact_info" placeholder="Enter your email" aria-required="true">
+        <button type="submit" aria-label="Sign up for UV index alerts">Sign Up</button>
+    </form>
+</div>
+
+<!-- JavaScript for Flash Messages as Popups -->
+<script>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                alert("{{ message }}");
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</script>
+{% endblock %}

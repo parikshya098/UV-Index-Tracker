@@ -1,53 +1,62 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>UV Index Tracker</h2>
+<h2>UV Index Forecast</h2>
 
-<form method="POST" aria-labelledby="form-instructions">
-    <p id="form-instructions" class="sr-only">Fill in location details to get the UV index forecast.</p>
-
+<form method="POST" id="location-form">
     <!-- City or ZIP Code Search -->
-    <label for="location">Enter City or ZIP Code:</label>
-    <input type="text" id="location" name="location" placeholder="City or ZIP Code" aria-required="true">
-    
-    <!-- Coordinate Search -->
+    <label for="location">Enter City:</label>
+    <input type="text" id="location" name="location" placeholder="City Name or ZIP Code" required>
+
+    <!-- Coordinate Inputs -->
     <label for="latitude">Latitude:</label>
-    <input type="text" id="latitude" name="latitude" placeholder="Latitude" aria-required="true">
-    
+    <input type="text" id="latitude" name="latitude" readonly>
+
     <label for="longitude">Longitude:</label>
-    <input type="text" id="longitude" name="longitude" placeholder="Longitude" aria-required="true">
-    
-    <!-- Automatic Location Detection Button -->
-    <button type="button" onclick="detectLocation()" aria-label="Detect my current location">
-        Use My Current Location
-    </button>
-    
-    <!-- Submit Button -->
-    <button type="submit" aria-label="Submit location information">Submit</button>
+    <input type="text" id="longitude" name="longitude" readonly>
+
+    <!-- Date Range Inputs -->
+    <label for="from_date">From Date:</label>
+    <input type="date" id="from_date" name="from_date" required>
+
+    <label for="to_date">To Date:</label>
+    <input type="date" id="to_date" name="to_date" required>
+
+    <button type="button" onclick="detectLocation()">Use My Current Location</button>
+    <button type="submit">Submit</button>
 </form>
 
-<!-- Sun Protection Recommendations -->
-<div class="section-box sun-protection" role="region" aria-labelledby="sun-protection-header">
-    <h3 id="sun-protection-header">Sun Protection Recommendations</h3>
-    <ul>
-        <li><strong>Sunscreen:</strong> Choose a broad-spectrum sunscreen with SPF based on the UV level. Reapply every 2 hours or after swimming/sweating.</li>
-        <li><strong>Clothing:</strong> Wear tightly woven, long-sleeve shirts and pants for better sun protection. Consider UPF-rated clothing for added protection.</li>
-        <li><strong>Accessories:</strong> Use a wide-brimmed hat and UV-blocking sunglasses to protect your face and eyes from UV rays.</li>
-    </ul>
-</div>
-
+<!-- JavaScript to detect location and reverse geocode -->
 <script>
-    function detectLocation() {
+    async function detectLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    document.getElementById('latitude').value = position.coords.latitude;
-                    document.getElementById('longitude').value = position.coords.longitude;
-                },
-                (error) => {
-                    alert("Location access denied or unavailable.");
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                
+                // Populate the latitude and longitude fields
+                document.getElementById('latitude').value = latitude;
+                document.getElementById('longitude').value = longitude;
+
+                // Perform reverse geocoding to get the city name
+                try {
+                    const response = await fetch(`/reverse-geocode?latitude=${latitude}&longitude=${longitude}`);
+                    const data = await response.json();
+                    
+                    if (response.ok && data.city) {
+                        // Populate the city name into the location field
+                        document.getElementById('location').value = data.city;
+                    } else {
+                        alert("Could not find your city. Please enter it manually.");
+                    }
+                } catch (error) {
+                    console.error("Error during reverse geocoding:", error);
+                    alert("An error occurred while fetching your location.");
                 }
-            );
+            }, (error) => {
+                alert("Failed to get your location. Please check your browser permissions.");
+                console.error("Geolocation error:", error);
+            });
         } else {
             alert("Geolocation is not supported by your browser.");
         }

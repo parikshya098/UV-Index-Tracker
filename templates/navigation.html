@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Educational Section on UV Index -->
+<div class="section-box education">
+    <h3>Understanding the UV Index</h3>
+    <p>The <strong>UV Index</strong> is a scale designed to measure the strength of ultraviolet radiation from the sun at a specific time and place. Higher UV levels indicate a greater risk of harm from unprotected sun exposure. Understanding the UV Index can help you take the right precautions to protect your skin and eyes from potential damage.</p>
+
+    <h4>What the Color-Coded Indicators Mean:</h4>
+    <ul>
+        <li><span style="color: green"><strong>Low (0-2):</strong></span> Minimal sun protection required. Wear sunglasses on bright days. If outside for more than one hour, cover up and use sunscreen. Reflection off snow can nearly double UV strength.</li>
+        <li><span style="color: yellow"><strong>Moderate (3-5):</strong></span> Take precautions by covering up and wearing sunscreen, especially if outdoors for 30 minutes or more. Seek shade near midday.</li>
+        <li><span style="color: orange"><strong>High (6-7):</strong></span> Protection required. UV exposure can cause sunburn. Reduce time in the sun between 11 AM and 3 PM.</li>
+        <li><span style="color: red"><strong>Very High (8-10):</strong></span> Extra precautions needed. Unprotected skin can burn quickly. Avoid the sun between 11 AM and 3 PM.</li>
+        <li><span style="color: purple"><strong>Extreme (11+):</strong></span> Full protection is essential. Unprotected skin will burn in minutes. Avoid the sun during peak hours, and be aware of reflective surfaces like sand and water.</li>
+    </ul>
+
+    <h4>Why UV Protection Matters:</h4>
+    <p>Overexposure to UV radiation can cause immediate effects like sunburn and long-term damage such as premature aging, skin cancer, and eye damage (like cataracts). Even on cloudy days, up to 80% of UV radiation can penetrate the clouds, so it's essential to take precautions year-round.</p>
+</div>
+
+<!-- Sun Protection and Additional Recommendations -->
+<div class="section-box sun-protection" role="region" aria-labelledby="sun-protection-header">
+    <h3 id="sun-protection-header">UV Protection and Safety Tips</h3>
+    
+    <p>To protect yourself from the harmful effects of UV radiation, start by applying a broad-spectrum sunscreen with SPF 30 or higher at least 15 minutes before sun exposure, and reapply every two hours, especially after swimming or sweating. Complement this with wearing long-sleeved shirts, pants, and UPF-rated clothing for added protection, opting for lightweight fabrics that cover more skin. Additionally, use accessories like a wide-brimmed hat and UV-blocking sunglasses to shield your face and eyes.</p>
+    
+    <p>It's also important to check the UV Index daily before heading outdoors, particularly if you plan to spend extended time outside. When the UV Index is high, seek shade between 10 AM and 4 PM when UV radiation is strongest, and remember to stay hydrated as high UV levels often coincide with hot weather. Lastly, be especially mindful of protecting children, who have more sensitive skin, by ensuring they are well-covered with sunscreen, hats, and sunglasses during outdoor activities.</p>
+</div>
+
+<!-- Interesting Facts About UV Radiation -->
+<div class="section-box sun-protection" role="region" aria-labelledby="uv-radiation-facts">
+    <h3 id="uv-radiation-facts">Interesting Facts About UV Radiation:</h3>
+    <ul>
+        <li><strong>Seasonal Impact:</strong> UV radiation is strongest during summer but can still be harmful in winter, especially in areas with snow, which reflects UV rays.</li>
+        <li><strong>Geographic Location:</strong> The closer you are to the equator, the higher the UV radiation levels. Additionally, UV exposure increases with altitude.</li>
+        <li><strong>Reflective Surfaces:</strong> Some surfaces like water, sand, and snow can reflect UV radiation, increasing your exposure.</li>
+    </ul>
+</div>
+
+{% endblock %}
