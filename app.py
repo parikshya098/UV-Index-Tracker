@@ -229,7 +229,7 @@ def signup():
 #     )
 
 #     try:
-#         sg = SendGridAPIClient('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')
+#         sg = SendGridAPIClient('api_key')
 #         response = sg.send(message)
 #         print(f"Email sent to {user_email}")
 #     except Exception as e:
