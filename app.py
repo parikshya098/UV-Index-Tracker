@@ -122,28 +122,47 @@ def index():
 
     return render_template('index.html')
 
+def get_current_uv_index(uv_data, time_data):
+    """Fetch the UV index for the current hour based on the current time."""
+    if not uv_data or not time_data:
+        return None
 
+    current_time = datetime.now().strftime('%Y-%m-%dT%H:00')
+    try:
+        # Find the index of the current time in the time_data array
+        if current_time in time_data:
+            index = time_data.index(current_time)
+            return uv_data[index] if index < len(uv_data) else None
+    except ValueError:
+        return None
+    return None
+
+# Route to display weather data
 @app.route('/weather')
 def weather():
+    # Retrieve query parameters from the request
     city = request.args.get('city', 'Unknown City')
     latitude = request.args.get('latitude')
     longitude = request.args.get('longitude')
     from_date = request.args.get('from_date')
     to_date = request.args.get('to_date')
 
+    # Validate required parameters
     if not latitude or not longitude or not from_date or not to_date:
         flash("Invalid or missing query parameters.", "error")
         return redirect(url_for('index'))
 
-    # Fetch the weather data
-    data = get_weather_data(latitude, longitude, from_date, to_date)
+    # Fetch weather data using the provided coordinates and date range
+    weather_data = get_weather_data(latitude, longitude, from_date, to_date)
 
-    uv_data = data.get('hourly', {}).get('uv_index', [])
-    time_data = data.get('hourly', {}).get('time', [])
+    # Extract UV index and time data from the response
+    uv_data = weather_data.get('hourly', {}).get('uv_index', [])
+    time_data = weather_data.get('hourly', {}).get('time', [])
 
-    # Get the current UV index value
-    current_uv_index = uv_data[0] if uv_data else None
+    # Determine the current UV index based on the current time
+    current_uv_index = get_current_uv_index(uv_data, time_data)
 
+    # Prepare the weather information dictionary to pass to the template
     weather_info = {
         'city': city,
         'latitude': latitude,
@@ -153,9 +172,12 @@ def weather():
         'uv_index': current_uv_index
     }
 
+    # Debug logs for validation
     print("Fetched UV Data:", uv_data)
     print("Fetched Time Data:", time_data)
+    print("Current UV Index:", current_uv_index)
 
+    # Render the weather template with the fetched data
     return render_template(
         'weather.html',
         weather_info=weather_info,

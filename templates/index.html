@@ -9,12 +9,23 @@
         <label for="location">Enter City or Zip Code:</label>
         <input type="text" id="location" name="location" placeholder="City / ZIP Code" required>
 
-        <!-- Coordinate Inputs -->
-        <label for="latitude">Latitude:</label>
-        <input type="text" id="latitude" name="latitude" readonly>
+        <!-- Latitude (Read-Only, Auto-filled) -->
+        <label for="latitude">Latitude:
+            <span class="info-icon" tabindex="0" onmouseover="showTooltip('latitude-tooltip')" onmouseout="hideTooltip('latitude-tooltip')" onclick="toggleTooltip('latitude-tooltip')">
+                ⓘ
+            </span>
+            <span class="tooltip" id="latitude-tooltip">Latitude is auto-detected and cannot be edited.</span>
+        </label>
+        <input type="text" id="latitude" name="latitude" placeholder="Auto-detected latitude" readonly>
 
-        <label for="longitude">Longitude:</label>
-        <input type="text" id="longitude" name="longitude" readonly>
+        <!-- Longitude (Read-Only, Auto-filled) -->
+        <label for="longitude">Longitude:
+            <span class="info-icon" tabindex="0" onmouseover="showTooltip('longitude-tooltip')" onmouseout="hideTooltip('longitude-tooltip')" onclick="toggleTooltip('longitude-tooltip')">
+                ⓘ
+            </span>
+            <span class="tooltip" id="longitude-tooltip">Longitude is auto-detected and cannot be edited.</span>
+        </label>
+        <input type="text" id="longitude" name="longitude" placeholder="Auto-detected longitude" readonly>
 
         <!-- Date Range Inputs -->
         <label for="from_date">From Date:</label>
@@ -23,30 +34,47 @@
         <label for="to_date">To Date:</label>
         <input type="date" id="to_date" name="to_date" required>
 
+        <!-- Detect Location Button -->
         <button type="button" onclick="detectLocation()">Use My Current Location</button>
         <button type="submit">Submit</button>
     </form>
 </div>
 
-<!-- JavaScript to detect location and reverse geocode -->
+<!-- JavaScript for Tooltips -->
 <script>
+    function showTooltip(id) {
+        document.getElementById(id).style.visibility = 'visible';
+        document.getElementById(id).style.opacity = '1';
+    }
+
+    function hideTooltip(id) {
+        document.getElementById(id).style.visibility = 'hidden';
+        document.getElementById(id).style.opacity = '0';
+    }
+
+    function toggleTooltip(id) {
+        const tooltip = document.getElementById(id);
+        if (tooltip.style.visibility === 'visible') {
+            hideTooltip(id);
+        } else {
+            showTooltip(id);
+        }
+    }
+
     async function detectLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const latitude = position.coords.latitude;
                 const longitude = position.coords.longitude;
-                
-                // Populate the latitude and longitude fields
+
                 document.getElementById('latitude').value = latitude;
                 document.getElementById('longitude').value = longitude;
 
-                // Perform reverse geocoding to get the city name
                 try {
                     const response = await fetch(`/reverse-geocode?latitude=${latitude}&longitude=${longitude}`);
                     const data = await response.json();
                     
                     if (response.ok && data.city) {
-                        // Populate the city name into the location field
                         document.getElementById('location').value = data.city;
                     } else {
                         alert("Could not find your city. Please enter it manually.");
@@ -64,4 +92,38 @@
         }
     }
 </script>
+
+<!-- Styling for Info Icon and Tooltip -->
+<style>
+    .info-icon {
+        cursor: pointer;
+        font-size: 1.2em;
+        color: #007bff;
+        border-radius: 100%;
+        padding: 3px;
+        margin-left: 0.5px;
+        display: inline-block;
+        text-align: center;
+
+    }
+    
+    .info-icon:hover {
+        background-color: #f0f8ff;
+    }
+
+    .tooltip {
+        position: absolute;
+        background-color: #333;
+        color: #fff;
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 0.9em;
+        white-space: nowrap;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease-in-out;
+        margin-left: 10px;
+    }
+</style>
 {% endblock %}

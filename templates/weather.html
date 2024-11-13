@@ -11,33 +11,33 @@
     <p><strong>From Date:</strong> {{ weather_info.from_date }}</p>
     <p><strong>To Date:</strong> {{ weather_info.to_date }}</p>
     <div class="section-box education">
-        <p><strong>Current UV Index</strong> 
-            {% if weather_info.uv_index is not none %}
+        <p><strong>Current UV Index: </strong>
+            {% if weather_info.uv_index is not none and weather_info.uv_index != 0 %}
                 {% if weather_info.uv_index <= 2 %}
-                    <strong>(Low)</strong> - 
+                    <strong>(Low)</strong> -
                 {% elif weather_info.uv_index <= 5 %}
-                    <strong>(Moderate)</strong> - 
+                    <strong>(Moderate)</strong> -
                 {% elif weather_info.uv_index <= 7 %}
-                    <strong>(High)</strong> - 
+                    <strong>(High)</strong> -
                 {% elif weather_info.uv_index <= 10 %}
-                    <strong>(Very High)</strong> - 
+                    <strong>(Very High)</strong> -
                 {% else %}
-                    <strong>(Extreme)</strong> - 
+                    <strong>(Extreme)</strong> -
                 {% endif %}
                 <span style="color: 
                     {% if weather_info.uv_index <= 2 %}green
                     {% elif weather_info.uv_index <= 5 %}yellow
                     {% elif weather_info.uv_index <= 7 %}orange
                     {% elif weather_info.uv_index <= 10 %}red
-                    {% else %}purple{% endif %}
-                ">
+                    {% else %}purple{% endif %}">
                     {{ weather_info.uv_index }}
                 </span>
             {% else %}
                 <span>No UV index data available</span>
             {% endif %}
-        </p>      
+        </p>
     </div>
+    
 
 </div>
 
@@ -78,18 +78,21 @@
     if (canvas) {
         const ctx = canvas.getContext('2d');
 
-        // Check if data is available
         if (Array.isArray(uvData) && uvData.length > 0 && Array.isArray(timeData) && timeData.length > 0) {
-            // Convert time data to more readable format
-            const formattedTimeData = timeData.map(time => new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+            // Format the time data for tooltips (full date and time)
+            const formattedTimeData = timeData.map(time => new Date(time).toLocaleString('en-US', {
+                month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
+            }));
 
-            console.log("Formatted Time Data:", formattedTimeData);
+            // Format the time data for x-axis labels (only date)
+            const formattedDateLabels = timeData.map(time => new Date(time).toLocaleDateString('en-US', {
+                month: 'short', day: 'numeric'
+            }));
 
-            // Create the chart
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: formattedTimeData,
+                    labels: formattedDateLabels,
                     datasets: [{
                         label: 'UV Index',
                         data: uvData,
@@ -123,7 +126,28 @@
                         x: {
                             title: {
                                 display: true,
-                                text: 'Time (Hourly)'
+                                text: 'Date'
+                            },
+                            ticks: {
+                                autoSkip: true,
+                                maxRotation: 0,
+                                minRotation: 0
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                // Customize the title to show date and time only
+                                title: function(context) {
+                                    const index = context[0].dataIndex;
+                                    return formattedTimeData[index];
+                                },
+                                // Customize the label to show only the UV index
+                                label: function(context) {
+                                    const uvValue = context.raw;
+                                    return UV Index: ${uvValue};
+                                }
                             }
                         }
                     }
@@ -136,4 +160,4 @@
         console.error("Canvas element not found");
     }
 </script>
-{% endblock %}
+{% endblock %} 
