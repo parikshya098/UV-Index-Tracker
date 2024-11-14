@@ -6,6 +6,7 @@
 <!-- Display forecast details -->
 <div class="current-weather">
     <p><strong>City / Zip Code:</strong> {{ weather_info.city | safe }}</p>
+    <p><strong>Country:</strong> {{ weather_info.country | safe }}</p>
     <p><strong>Latitude:</strong> {{ weather_info.latitude }}</p>
     <p><strong>Longitude:</strong> {{ weather_info.longitude }}</p>
     <p><strong>From Date:</strong> {{ weather_info.from_date }}</p>

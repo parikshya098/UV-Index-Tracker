@@ -104,8 +104,14 @@ def weather():
     uv_data = weather_data.get('hourly', {}).get('uv_index', [])
     time_data = weather_data.get('hourly', {}).get('time', [])
 
+    # Fetch country using reverse geocoding
+    geo_response = requests.get(f"http://127.0.0.1:8000/reverse-geocode?latitude={latitude}&longitude={longitude}")
+    geo_data = geo_response.json()
+    country = geo_data.get('country', 'Unknown Country')
+
     weather_info = {
         'city': city,
+        'country': country,  # Add this line
         'latitude': latitude,
         'longitude': longitude,
         'from_date': from_date,
@@ -121,6 +127,7 @@ def weather():
 def reverse_geocode():
     latitude = request.args.get('latitude')
     longitude = request.args.get('longitude')
+    
     if not latitude or not longitude:
         return jsonify({"error": "Missing coordinates"}), 400
 
@@ -131,7 +138,8 @@ def reverse_geocode():
         data = response.json()
         if 'features' in data and data['features']:
             city = data['features'][0]['properties'].get('city', 'Unknown City')
-            return jsonify({"city": city})
+            country = data['features'][0]['properties'].get('country', 'Unknown Country')
+            return jsonify({"city": city, "country": country})
         return jsonify({"error": "No city found"}), 404
     except requests.exceptions.RequestException as e:
         print(f"Error during reverse geocoding: {e}")

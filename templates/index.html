@@ -6,7 +6,15 @@
 <div class="form-container">
     <form method="POST" action="/search" id="location-form">
         <!-- City or ZIP Code Search -->
-        <label for="location">Enter City or Zip Code:</label>
+        <label for="location">Enter City or ZIP Code:
+            <span class="info-icon" tabindex="0" onmouseover="showTooltip('location-tooltip')" onmouseout="hideTooltip('location-tooltip')" onclick="toggleTooltip('location-tooltip')">
+                ⓘ
+            </span>
+            <span class="tooltip" id="location-tooltip">
+                To search for UV Index data for a specific location, type the city name or ZIP code, select the date range, and press the "Submit" button.<br>
+                For current location data, click the "Use My Current Location" button.
+            </span>
+        </label>
         <input type="text" id="location" name="location" placeholder="City / ZIP Code" required>
 
         <!-- Latitude (Read-Only, Auto-filled) -->
@@ -14,7 +22,10 @@
             <span class="info-icon" tabindex="0" onmouseover="showTooltip('latitude-tooltip')" onmouseout="hideTooltip('latitude-tooltip')" onclick="toggleTooltip('latitude-tooltip')">
                 ⓘ
             </span>
-            <span class="tooltip" id="latitude-tooltip">Latitude is auto-detected and cannot be edited.</span>
+            <span class="tooltip" id="latitude-tooltip">
+                Auto-detected only when "Use My Current Location" button is clicked.<br>
+                For other locations, enter a city name or ZIP code above.
+            </span>
         </label>
         <input type="text" id="latitude" name="latitude" placeholder="Auto-detected latitude" readonly>
 
@@ -23,25 +34,45 @@
             <span class="info-icon" tabindex="0" onmouseover="showTooltip('longitude-tooltip')" onmouseout="hideTooltip('longitude-tooltip')" onclick="toggleTooltip('longitude-tooltip')">
                 ⓘ
             </span>
-            <span class="tooltip" id="longitude-tooltip">Longitude is auto-detected and cannot be edited.</span>
+            <span class="tooltip" id="longitude-tooltip">
+                Auto-detected only when "Use My Current Location" button is clicked.<br>
+                For other locations, enter a city name or ZIP code above.
+            </span>
         </label>
         <input type="text" id="longitude" name="longitude" placeholder="Auto-detected longitude" readonly>
 
-        <!-- Date Range Inputs -->
-        <label for="from_date">From Date:</label>
-        <input type="date" id="from_date" name="from_date" required>
 
-        <label for="to_date">To Date:</label>
-        <input type="date" id="to_date" name="to_date" required>
+        <!-- From Date Tooltip -->
+        <label for="from-date">From Date:
+            <span class="info-icon" tabindex="0" onmouseover="showTooltip('from-date-tooltip')" onmouseout="hideTooltip('from-date-tooltip')" onclick="toggleTooltip('from-date-tooltip')">
+                ⓘ
+            </span>
+            <span class="tooltip" id="from-date-tooltip">
+                Historical Data: You can view historical data up to 98 days back from today.
+            </span>
+        </label>
+        <input type="date" id="from-date" name="from_date" required>
+
+        <!-- To Date Tooltip -->
+        <label for="to-date">To Date:
+            <span class="info-icon" tabindex="0" onmouseover="showTooltip('to-date-tooltip')" onmouseout="hideTooltip('to-date-tooltip')" onclick="toggleTooltip('to-date-tooltip')">
+                ⓘ
+            </span>
+            <span class="tooltip" id="to-date-tooltip">
+                Future Forecast: You can see forecast data for up to 15 days into the future from today.
+            </span>
+        </label>
+        <input type="date" id="to-date" name="to_date" required>
 
         <!-- Detect Location Button -->
         <button type="button" onclick="detectLocation()">Use My Current Location</button>
         <button type="submit">Submit</button>
+
     </form>
 </div>
 
-<!-- JavaScript for Tooltips -->
 <script>
+    // Tooltip functions
     function showTooltip(id) {
         document.getElementById(id).style.visibility = 'visible';
         document.getElementById(id).style.opacity = '1';
@@ -61,6 +92,33 @@
         }
     }
 
+    // Function to format the date as 'YYYY-MM-DD'
+    function formatDate(date) {
+        return date.toISOString().split('T')[0];
+    }
+
+    // Function to set the min and max dates for both date inputs
+    function setDateRange() {
+        const today = new Date();
+
+        // Calculate the past (98 days ago) and future (15 days ahead) date limits
+        const pastDate = new Date(today);
+        pastDate.setDate(today.getDate() - 99); 
+        const futureDate = new Date(today);
+        futureDate.setDate(today.getDate() + 14); 
+
+        // Format the min and max dates
+        const minDate = formatDate(pastDate); 
+        const maxDate = formatDate(futureDate); 
+
+        // Set the min and max attributes for both date inputs
+        document.getElementById('from-date').setAttribute('min', minDate);
+        document.getElementById('from-date').setAttribute('max', maxDate);
+        document.getElementById('to-date').setAttribute('min', minDate);
+        document.getElementById('to-date').setAttribute('max', maxDate);
+    }
+
+    // Function to detect the user's current location
     async function detectLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(async (position) => {
@@ -91,6 +149,12 @@
             alert("Geolocation is not supported by your browser.");
         }
     }
+
+    // Call setDateRange and detectLocation on page load
+    window.onload = function() {
+        setDateRange();
+        detectLocation();
+    };
 </script>
 
 <!-- Styling for Info Icon and Tooltip -->
@@ -116,6 +180,7 @@
         background-color: #333;
         color: #fff;
         padding: 5px;
+        width: 500px; 
         border-radius: 5px;
         font-size: 0.9em;
         white-space: nowrap;
@@ -125,5 +190,18 @@
         transition: opacity 0.2s ease-in-out;
         margin-left: 10px;
     }
+
+    /* Display tooltip on hover */
+    .info-icon:hover + .tooltip,
+    .info-icon:focus + .tooltip {
+        display: block;
+    }
+
+    /* Ensure the tooltip doesn't overflow the screen */
+    .tooltip {
+        white-space: normal;
+        overflow-wrap: break-word;
+    }
+
 </style>
 {% endblock %}
