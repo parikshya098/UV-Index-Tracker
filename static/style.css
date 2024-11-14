@@ -5,6 +5,7 @@ body {
     padding: 0;
     background-color: #f4f4f9; /* Light background for high contrast */
     color: #333; /* Dark text for readability */
+    height: 100vh;
 }
 
 /* Header Styling */
@@ -179,8 +180,6 @@ main {
     box-sizing: border-box;
 }
 
-/* Form Styles */
-/* Form Container Styling */
 /* Form Container Styling */
 form#location-form {
     display: flex;
@@ -444,100 +443,87 @@ button:active {
     font-size: 1rem;
 }
 
-/* Chart Container */
-/* Chart Container Styling */
-.chart-container {
+/* Wrapper for chart and color indicator */
+.chart-wrapper {
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    height: 100vh; /* Full screen height */
     width: 100%;
-    max-width: 900px;
-    height: 500px;
+}
+
+/* Center the Chart Container */
+.chart-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 800px; /* Adjust as needed */
+    height: 500px; /* Adjust as needed */
     background-color: #ffffff;
     padding: 20px;
-    margin: 20px auto;
+    margin: auto;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
-/* Canvas Styling */
-canvas {
-    flex: 1;
-    height: 100%;
-}
-
-/* Slim Color Indicator Bar on the side */
+/* Color Indicator Positioned to the Right of the Chart */
 .color-indicator {
+    position: absolute;
+    right: -140px; /* Adjust this to control distance from the chart */
+    top: 50%;
+    transform: translateY(-50%); /* Center it vertically */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    width: 120px; /* Very narrow width */
+    width: 120px; /* Slim width */
+    background-color: #f9f9f9;
     padding: 5px;
-    margin-left: 40px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .color-item {
     display: flex;
     align-items: center;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 .color-box {
-    width: 15px; /* Very slim color box */
-    height: 15px;
-    border-radius: 3px;
-    margin-right: 8px;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    margin-right: 6px;
 }
 
-/* Color levels based on UV index */
-.color-box.low {
-    background-color: green;
-}
-
-.color-box.moderate {
-    background-color: yellow;
-}
-
-.color-box.high {
-    background-color: orange;
-}
-
-.color-box.very-high {
-    background-color: red;
-}
-
-.color-box.extreme {
-    background-color: purple;
-}
+/* Colors for UV levels */
+.color-box.low { background-color: green; }
+.color-box.moderate { background-color: yellow; }
+.color-box.high { background-color: orange; }
+.color-box.very-high { background-color: red; }
+.color-box.extreme { background-color: purple; }
 
 .color-item span {
     font-size: 0.8rem;
     color: #333;
 }
 
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .chart-container {
+    .chart-wrapper {
         flex-direction: column;
-        height: 400px;
     }
-
     .color-indicator {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-around;
+        position: static;
+        margin-top: 20px;
+        transform: none;
         width: 100%;
-        margin-top: 10px;
-    }
-
-    .color-item {
-        margin-bottom: 0;
-        margin-right: 10px;
+        flex-direction: row;
+        justify-content: space-around;
     }
 }
-
-
 
 /* Alerts */
 .alert {

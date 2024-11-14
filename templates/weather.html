@@ -10,154 +10,128 @@
     <p><strong>Longitude:</strong> {{ weather_info.longitude }}</p>
     <p><strong>From Date:</strong> {{ weather_info.from_date }}</p>
     <p><strong>To Date:</strong> {{ weather_info.to_date }}</p>
+    
     <div class="section-box education">
-        <p><strong>Current UV Index: </strong>
-            {% if weather_info.uv_index is not none and weather_info.uv_index != 0 %}
-                {% if weather_info.uv_index <= 2 %}
-                    <strong>(Low)</strong> -
-                {% elif weather_info.uv_index <= 5 %}
-                    <strong>(Moderate)</strong> -
-                {% elif weather_info.uv_index <= 7 %}
-                    <strong>(High)</strong> -
-                {% elif weather_info.uv_index <= 10 %}
-                    <strong>(Very High)</strong> -
-                {% else %}
-                    <strong>(Extreme)</strong> -
-                {% endif %}
-                <span style="color: 
-                    {% if weather_info.uv_index <= 2 %}green
-                    {% elif weather_info.uv_index <= 5 %}yellow
-                    {% elif weather_info.uv_index <= 7 %}orange
-                    {% elif weather_info.uv_index <= 10 %}red
-                    {% else %}purple{% endif %}">
-                    {{ weather_info.uv_index }}
+        <p><strong>Current UV Index</strong>
+            {% if weather_info.uv_index is not none %}
+                <span class="uv-level" style="color: {% if weather_info.uv_index <= 2 %}green
+                                               {% elif weather_info.uv_index <= 5 %}yellow
+                                               {% elif weather_info.uv_index <= 7 %}orange
+                                               {% elif weather_info.uv_index <= 10 %}red
+                                               {% else %}purple{% endif %}">
+                    {% if weather_info.uv_index == 0 %}(Low)
+                    {% elif weather_info.uv_index <= 2 %}(Low)
+                    {% elif weather_info.uv_index <= 5 %}(Moderate)
+                    {% elif weather_info.uv_index <= 7 %}(High)
+                    {% elif weather_info.uv_index <= 10 %}(Very High)
+                    {% else %}(Extreme){% endif %}
+                    : {{ weather_info.uv_index }}
                 </span>
             {% else %}
                 <span>No UV index data available</span>
             {% endif %}
         </p>
     </div>
-    
-
 </div>
 
-<div class="chart-container">
-    <canvas id="uvChart"></canvas>
+<div class="chart-wrapper">
+    <!-- Chart Container -->
+    <div class="chart-container">
+        <canvas id="uvChart"></canvas>
+    </div>
 
+    <!-- Color Indicator Legend -->
     <div class="color-indicator">
         <div class="color-item">
-            <div class="color-box low"></div><span>Low</span>
+            <div class="color-box low"></div><span>Low (0-2)</span>
         </div>
         <div class="color-item">
-            <div class="color-box moderate"></div><span>Moderate</span>
+            <div class="color-box moderate"></div><span>Moderate (3-5)</span>
         </div>
         <div class="color-item">
-            <div class="color-box high"></div><span>High</span>
+            <div class="color-box high"></div><span>High (6-7)</span>
         </div>
         <div class="color-item">
-            <div class="color-box very-high"></div><span>Very High</span>
+            <div class="color-box very-high"></div><span>Very High (8-10)</span>
         </div>
         <div class="color-item">
-            <div class="color-box extreme"></div><span>Extreme</span>
+            <div class="color-box extreme"></div><span>Extreme (11+)</span>
         </div>
     </div>
 </div>
-
 
 <!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    const uvData = {{ uv_data | tojson | safe }};
-    const timeData = {{ time_data | tojson | safe }};
+    const uvData = {{ weather_info.uv_data | tojson | safe }};
+    const timeData = {{ weather_info.time_data | tojson | safe }};
 
     console.log("UV Data:", uvData);
     console.log("Time Data:", timeData);
 
     const canvas = document.getElementById('uvChart');
-    if (canvas) {
+    if (canvas && Array.isArray(uvData) && uvData.length > 0 && Array.isArray(timeData) && timeData.length > 0) {
         const ctx = canvas.getContext('2d');
 
-        if (Array.isArray(uvData) && uvData.length > 0 && Array.isArray(timeData) && timeData.length > 0) {
-            // Format the time data for tooltips (full date and time)
-            const formattedTimeData = timeData.map(time => new Date(time).toLocaleString('en-US', {
-                month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
-            }));
+        // Format time for tooltips
+        const formattedTimeData = timeData.map(time => new Date(time).toLocaleString('en-US', {
+            month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        }));
 
-            // Format the time data for x-axis labels (only date)
-            const formattedDateLabels = timeData.map(time => new Date(time).toLocaleDateString('en-US', {
-                month: 'short', day: 'numeric'
-            }));
+        // Format labels for the x-axis
+        const formattedDateLabels = timeData.map(time => new Date(time).toLocaleDateString('en-US', {
+            month: 'short', day: 'numeric'
+        }));
 
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: formattedDateLabels,
-                    datasets: [{
-                        label: 'UV Index',
-                        data: uvData,
-                        borderColor: '#FF5733',
-                        backgroundColor: 'rgba(255, 87, 51, 0.2)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: uvData.map(value => {
-                            if (value <= 2) return 'green';
-                            if (value <= 5) return 'yellow';
-                            if (value <= 7) return 'orange';
-                            if (value <= 10) return 'red';
-                            return 'purple';
-                        }),
-                        pointRadius: 5,
-                        pointHoverRadius: 7
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'UV Index'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            },
-                            ticks: {
-                                autoSkip: true,
-                                maxRotation: 0,
-                                minRotation: 0
-                            }
-                        }
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: formattedDateLabels,
+                datasets: [{
+                    label: 'UV Index',
+                    data: uvData,
+                    borderColor: '#FF5733',
+                    backgroundColor: 'rgba(255, 87, 51, 0.2)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: uvData.map(value => {
+                        if (value <= 2) return 'green';
+                        if (value <= 5) return 'yellow';
+                        if (value <= 7) return 'orange';
+                        if (value <= 10) return 'red';
+                        return 'purple';
+                    }),
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'UV Index' }
                     },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                // Customize the title to show date and time only
-                                title: function(context) {
-                                    const index = context[0].dataIndex;
-                                    return formattedTimeData[index];
-                                },
-                                // Customize the label to show only the UV index
-                                label: function(context) {
-                                    const uvValue = context.raw;
-                                    return UV Index: ${uvValue};
-                                }
-                            }
+                    x: {
+                        title: { display: true, text: 'Date' },
+                        ticks: { autoSkip: true, maxRotation: 0 }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: context => formattedTimeData[context[0].dataIndex],
+                            label: context => `UV Index: ${context.raw}`
                         }
                     }
                 }
-            });
-        } else {
-            console.error("Chart data is missing or incomplete");
-        }
+            }
+        });
     } else {
-        console.error("Canvas element not found");
+        console.error("Chart data is missing or incomplete");
     }
 </script>
-{% endblock %} 
+{% endblock %}
