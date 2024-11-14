@@ -33,6 +33,7 @@
     </div>
 
     <main role="main">
+        <button id="tts-button" onclick="toggleSpeech()">🔊 Read Aloud</button>
         {% block content %}{% endblock %}
     </main>
 
@@ -66,5 +67,68 @@
         };
 
     </script>
+    <script>
+        let isSpeaking = false;
+        const synth = window.speechSynthesis;
+        let utterance;
+    
+        // Function to initialize and start speech
+        function startSpeech(text) {
+            utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1; // Adjust speed (0.5 to 2 is a good range)
+            utterance.pitch = 1; // Adjust pitch (0 to 2)
+            utterance.lang = 'en-US';
+            synth.speak(utterance);
+            isSpeaking = true;
+        }
+    
+        // Function to toggle speech
+        function toggleSpeech() {
+            const content = document.querySelector('main').innerText;
+            
+            if (isSpeaking) {
+                synth.cancel(); // Stop speech if already speaking
+                isSpeaking = false;
+                document.getElementById('tts-button').innerText = '🔊 Read Aloud';
+            } else {
+                startSpeech(content);
+                document.getElementById('tts-button').innerText = '🔇 Stop Reading';
+            }
+        }
+    
+        // Event listener to stop speaking when the text ends
+        if (utterance) {
+            utterance.onend = function() {
+                isSpeaking = false;
+                document.getElementById('tts-button').innerText = '🔊 Read Aloud';
+            };
+        }
+    </script>
+
+    <style>
+        /* Positioning the TTS button at the top-right corner */
+        #tts-button {
+            position: fixed !important; /* Fixed position to stay in the top-right corner */
+            top: 150px !important; /* Distance from the top */
+            right: 25px !important; /* Distance from the right */
+            padding: 8px 12px !important;
+            background-color: #FF914D !important;
+            color: #ffffff !important;
+            border: none !important;
+            border-radius: 4px !important;
+            cursor: pointer !important;
+            font-weight: bold !important;
+            transition: background-color 0.3s ease !important;
+            z-index: 9999 !important; /* Ensure it stays above other content */
+        }
+
+        #tts-button:hover {
+            background-color: #FF7043 !important;
+        }
+
+        #tts-button:active {
+            background-color: #E64A19 !important;
+        }
+    </style>
 </body>
 </html>
