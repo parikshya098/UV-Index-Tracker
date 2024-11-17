@@ -1,11 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+import os
 import requests
+import smtplib
 from datetime import datetime
 from flask_cors import CORS
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__)
 app.secret_key = 'saana2003'
 CORS(app, resources={r"/*": {"origins": "*"}})
+
+EMAIL_ADDRESS = os.getenv('EMAIL_USER')
+EMAIL_PASSWORD = os.getenv('EMAIL_PASS')
 
 # API Key for Geoapify (used for reverse geocoding)
 GEOAPIFY_API_KEY = "762a915c41de446e9484044f0ac7c6b4"
@@ -20,6 +27,22 @@ def apply_csp(response):
     )
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
+
+def send_email(to_email, subject, body):
+    """Send an email using SMTP."""
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = EMAIL_ADDRESS
+        msg['To'] = to_email
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'plain'))
+
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.sendmail(EMAIL_ADDRESS, to_email, msg.as_string())
+    except Exception as e:
+        print(f"Error sending email: {e}")
 
 def get_coordinates(location):
     """Fetch coordinates using Open-Meteo Geocoding API."""
@@ -148,27 +171,39 @@ def reverse_geocode():
 @app.route('/feedback', methods=['GET', 'POST'])
 def feedback():
     if request.method == 'POST':
-        feedback = request.form.get('feedback')
-        email = request.form.get('email')
-        if feedback:
-            print(f"Feedback: {feedback}")
-            if email:
-                print(f"Email: {email}")
+        feedback_text = request.form.get('feedback')
+        user_email = request.form.get('email')
+
+        if feedback_text:
+            # Send feedback to your email
+            send_email(
+                to_email=EMAIL_ADDRESS,
+                subject="New Feedback Received",
+                body=f"Feedback: {feedback_text}\nFrom: {user_email if user_email else 'Anonymous'}"
+            )
             flash("Thank you for your feedback!", "success")
         else:
             flash("Please provide your feedback.", "error")
+
         return redirect(url_for('feedback'))
     return render_template('feedback.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        email = request.form.get('contact_info')
-        if email:
-            print(f"Signup email: {email}")
+        user_email = request.form.get('contact_info')
+
+        if user_email:
+            # Send a thank you email to the user
+            send_email(
+                to_email=user_email,
+                subject="Thank you for signing up!",
+                body="Thanks for signing up for UV Index Alerts! You'll receive alert notifications on high UV index days."
+            )
             flash("Successfully signed up for alerts!", "success")
         else:
             flash("Please enter a valid email.", "error")
+
         return redirect(url_for('signup'))
     return render_template('signup.html')
 
