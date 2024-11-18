@@ -118,7 +118,8 @@ def weather():
     if not city or not latitude or not longitude or not from_date or not to_date:
         flash("Invalid or missing query parameters.", "error")
         return redirect(url_for('index'))
-
+    
+    # Fetch weather data for historical UV data (if needed)
     weather_data = get_weather_data(latitude, longitude, from_date, to_date)
     if not weather_data:
         flash("Error fetching weather data.", "error")
@@ -132,16 +133,16 @@ def weather():
     geo_data = geo_response.json()
     country = geo_data.get('country', 'Unknown Country')
 
+    # Prepare data for rendering
     weather_info = {
         'city': city,
-        'country': country,  # Add this line
+        'country': country, 
         'latitude': latitude,
         'longitude': longitude,
         'from_date': from_date,
         'to_date': to_date,
         'uv_data': uv_data,
         'time_data': time_data,
-        'uv_index': uv_data[-1] if uv_data else None
     }
 
     return render_template('weather.html', weather_info=weather_info)
