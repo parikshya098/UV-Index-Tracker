@@ -75,8 +75,8 @@
         // Function to initialize and start speech
         function startSpeech(text) {
             utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 1; // Adjust speed (0.5 to 2 is a good range)
-            utterance.pitch = 1; // Adjust pitch (0 to 2)
+            utterance.rate = 1; 
+            utterance.pitch = 1; 
             utterance.lang = 'en-US';
             synth.speak(utterance);
             isSpeaking = true;
